@@ -4,21 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 namespace Gtest.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("server/api/gwp")]
 public class CountryGwp(ILogger<CountryGwp> logger) : ControllerBase
 {
-	private readonly ILogger<CountryGwp> _logger = logger;
+    private readonly ILogger<CountryGwp> _logger = logger;
 
-	[HttpGet(Name = "avg")]
-	public async Task<IEnumerable<LlinesOfBusiness>> GetAwgAsync(AvgRequest avgRequest)
-	{
-		return new List<LlinesOfBusiness>()
-		{
-			new LlinesOfBusiness
-			{
-				Transport = 1.0,
-				liability = 2.0
-			}
-		};
-	}
+    [HttpPost(Name = "avg")]
+    public async Task<ActionResult<IEnumerable<LlinesOfBusiness>>> GetAwgAsync([FromBody] AvgRequest avgRequest)
+    {
+        try
+        {
+            _logger.LogInformation("Received request for average GWP for country: {Country} with LOBs: {LineOfBusiness}",
+                avgRequest.Country, string.Join(", ", avgRequest.LineOfBusiness));
+
+            return new List<LlinesOfBusiness>()
+            {
+                new LlinesOfBusiness
+                {
+                    Transport = 1.0,
+                    liability = 2.0
+                }
+            };
+
+        }
+        catch (Exception)
+        {
+            return Problem("An error occurred while processing the request.");
+        }
+    }
 }

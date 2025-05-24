@@ -1,6 +1,12 @@
-@Gtest_HostAddress = http://localhost:5112
+@Gtest_HostAddress = http://localhost:9091
 
-GET {{Gtest_HostAddress}}/weatherforecast/
+POST {{Gtest_HostAddress}}/server/api/gwp
+Content-Type: application/json
 Accept: application/json
+
+{
+  "country": "cz",
+  "lob": [ "transport", "liability" ]
+}
 
 ###
