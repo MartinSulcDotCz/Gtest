@@ -1,3 +1,5 @@
+using Gtest.Common.Core.Enums;
+using Gtest.Common.Helpers;
 using Gtest.Common.Services.Interfaces;
 using Gtest.Models.ApiModels;
 using Gtest.Models.DbModels;
@@ -13,7 +15,7 @@ public class GwpController(ICountryGwpService countryGwpService, ILogger<GwpCont
 	private readonly ICountryGwpService _countryGwpService = countryGwpService ?? throw new ArgumentNullException(nameof(countryGwpService));
 
 	/// <summary>
-	/// 
+	/// It returns an average gross written premium (GWP) over 2008-2015 period for the selected lines of business and country.
 	/// </summary>
 	/// <param name="avgRequest">
 	/// Country is ISO 639-1 code, e.g. "en" for English, "fr" for French.
@@ -21,19 +23,32 @@ public class GwpController(ICountryGwpService countryGwpService, ILogger<GwpCont
 	/// </param>
 	/// <returns></returns>
 	[HttpPost("[action]")]
-	public async Task<ActionResult<Dictionary<string, double>>> AvgAsync([FromBody] AvgRequestDto avgRequest)
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+	public async Task<ActionResult<Dictionary<LineOfBusinessEnum, double>>> AvgAsync([FromBody] AvgRequestDto avgRequest)
 	{
 		try
 		{
 			_logger.LogInformation("Received request for average GWP for country: {Country} with LOBs: {LineOfBusiness}",
 				avgRequest.Country, string.Join(", ", avgRequest.LineOfBusiness));
 
+			//if (avgRequest.Country == null || !avgRequest.Country.IsValidLanguageCode())
+			//{
+			//	return BadRequest("Invalid country code. Please provide a valid ISO 639-1 language code.");
+			//}
+
+			if (avgRequest.LineOfBusiness != null && !avgRequest.LineOfBusiness.IsValidLineOfBusiness())
+			{
+				return BadRequest("Invalid LineOfBusiness code. Please provide a valid LineOfBusiness code.");
+			}
+
 			AvgBylineOfBusiness result = await _countryGwpService.AvgAsync(avgRequest);
 			return result.AvgByLineOfBusiness;
 		}
 		catch (Exception)
 		{
-			return Problem("An error occurred while processing the request.");
+			return Problem("An error occurred while processing the request.", statusCode: StatusCodes.Status500InternalServerError);
 		}
 	}
 }

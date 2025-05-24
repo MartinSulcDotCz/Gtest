@@ -1,4 +1,5 @@
-﻿using Gtest.Common.DataForTest;
+﻿using Gtest.Common.Core.Enums;
+using Gtest.Common.DataForTest;
 using Gtest.Common.Services.Interfaces;
 using Gtest.Models.ApiModels;
 using Gtest.Models.DbModels;
@@ -17,6 +18,7 @@ public class CountryGwpService(VirtualDatabase virtualDatabase) : ICountryGwpSer
 
 		foreach (string lineOfBusiness in avgRequest.LineOfBusiness)
 		{
+			Enum.TryParse<LineOfBusinessEnum>(lineOfBusiness, true, out LineOfBusinessEnum lineOfBusinessEnum);
 			using var cmd = connection.CreateCommand();
 			cmd.CommandText = @"
 							SELECT
@@ -31,12 +33,12 @@ public class CountryGwpService(VirtualDatabase virtualDatabase) : ICountryGwpSer
 								CAST(Y2015 AS REAL)
 							) / 8.0 AS Average
 							FROM [gwpByCountry] 
-							WHERE [country] = @country AND [lineOfBusiness] = @lineOfBusiness";
+							WHERE [country] = @country AND [lineOfBusiness] = @lineOfBusiness"; // I usually use the Entity Framework Core, but here I use raw SQL for simplicity.
 			cmd.Parameters.AddWithValue("@country", avgRequest.Country ?? string.Empty);
 			cmd.Parameters.AddWithValue("@lineOfBusiness", lineOfBusiness);
 			object? avg = await cmd.ExecuteScalarAsync();
 			double avgLineOfBusiness = (avg is DBNull || avg == null) ? 0.0 : Convert.ToDouble(avg);
-			avgBylineOfBusiness.AvgByLineOfBusiness.Add(lineOfBusiness, avgLineOfBusiness);
+			avgBylineOfBusiness.AvgByLineOfBusiness.Add(lineOfBusinessEnum, avgLineOfBusiness);
 		}
 
 		return avgBylineOfBusiness;
