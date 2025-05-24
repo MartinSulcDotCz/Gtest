@@ -11,6 +11,14 @@ public class GwpController(ILogger<GwpController> logger) : ControllerBase
     private readonly ILogger<GwpController> _logger = logger;
     private readonly ICountryGwpService _countryGwpService;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="avgRequest">
+    /// Country is ISO 639-1 code, e.g. "en" for English, "fr" for French.
+    /// LineOfBusiness is a list of strings representing the lines of business for which the average GWP is requested. <see cref="Gtest.Common.Core.Enums.LineOfBusinessEnum"/>
+    /// </param>
+    /// <returns></returns>
     [HttpPost("[action]")]
     public async Task<ActionResult<IEnumerable<LlinesOfBusiness>>> AvgAsync([FromBody] AvgRequest avgRequest)
     {
