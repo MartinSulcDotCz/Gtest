@@ -1,3 +1,4 @@
+using Gtest.Common.DataForTest;
 using Gtest.Common.Services;
 using Gtest.Common.Services.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -7,6 +8,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICountryGwpService, CountryGwpService>();
+builder.Services.AddSingleton<VirtualDatabase>();
 
 builder.Services.AddSwaggerGen(sa =>
 {

@@ -2,7 +2,7 @@
 
 namespace Gtest.Models.ApiModels;
 
-public class AvgRequest
+public class AvgRequestDto
 {
 
     public string? Country { get; set; }

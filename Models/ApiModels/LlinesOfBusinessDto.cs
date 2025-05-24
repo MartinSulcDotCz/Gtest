@@ -1,6 +1,6 @@
 namespace Gtest.Models.ApiModels;
 
-public class LlinesOfBusiness
+public class LlinesOfBusinessDto
 {
 	public double Transport { get; set; }
 

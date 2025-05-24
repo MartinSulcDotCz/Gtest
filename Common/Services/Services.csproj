@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Models\ApiModels\ApiModels.csproj" />
+    <ProjectReference Include="..\..\Models\DbModels\DbModels.csproj" />
+    <ProjectReference Include="..\DataForTest\DataForTest.csproj" />
   </ItemGroup>
 
 </Project>
