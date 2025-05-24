@@ -1,0 +1,6 @@
+@Gtest_HostAddress = http://localhost:5112
+
+GET {{Gtest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
