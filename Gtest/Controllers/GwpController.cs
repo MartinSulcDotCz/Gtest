@@ -43,7 +43,15 @@ public class GwpController(ICountryGwpService countryGwpService, ILogger<GwpCont
 				return BadRequest("Invalid LineOfBusiness code. Please provide a valid LineOfBusiness code.");
 			}
 
+			//if (avgRequest.IsInCache()) // Cache the results of each request and return the cached result if available
+			//{
+			//	return FromCache;
+			//}
+
 			AvgBylineOfBusiness result = await _countryGwpService.AvgAsync(avgRequest);
+
+			// Cache the results of each request and return the cached result if available. Redis?
+
 			return result.AvgByLineOfBusiness;
 		}
 		catch (Exception)
